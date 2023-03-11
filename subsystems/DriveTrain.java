@@ -7,8 +7,6 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -49,6 +47,7 @@ public class DriveTrain extends SubsystemBase{
     private double goalAuto;
 
     public DriveTrain(){
+        // init spark max
         RightD1.restoreFactoryDefaults();
         RightD2.restoreFactoryDefaults();
         LeftD1.restoreFactoryDefaults();
@@ -59,16 +58,11 @@ public class DriveTrain extends SubsystemBase{
 
         RightD1.setInverted(true);
         
+
+        // init encoders
         R_encoder = RightD1.getEncoder();
         L_encoder = RightD1.getEncoder();
         myDrive = new DifferentialDrive(LeftD1 , RightD1 );
-
-        try {
-            NAVX = new AHRS(SPI.Port.kMXP);
-        } catch (Exception e) {
-            DriverStation.reportError("NAVX ERROR"+e.getMessage(), true);
-        }
-        m_Odometry = new DifferentialDriveOdometry(NAVX.getRotation2d(), metersL_encoder(), metersR_encoder());
         
         //auto 
         R_PID.setSetpoint(0);
@@ -78,27 +72,22 @@ public class DriveTrain extends SubsystemBase{
     public void curvatureDrive(double fwd, double rt){
         myDrive.curvatureDrive(fwd * this.speed, (rt * this.speed), true);
     }
+
+    //set max speed
     public void max(double max){
         this.speed = max;
-    }
-
-    @Override
-    public void periodic(){
-        m_Odometry.update( this.NAVX.getRotation2d(), metersL_encoder(), metersR_encoder());
-    }
-    
+    }   
 
     public void Telemetry(){
-        SmartDashboard.putNumber(   "IMU_Yaw", NAVX.getYaw());
         SmartDashboard.putNumber("R Encoder", metersR_encoder());
         SmartDashboard.putNumber("L Encoder", metersL_encoder());
-
     }
+    
     public double metersR_encoder(){
-        return DriveConstants.Revoluionspermeter * R_encoder.getPosition();
+        return R_encoder.getPosition() / DriveConstants.Revoluionspermeter;
     }
     public double metersL_encoder(){
-        return DriveConstants.Revoluionspermeter * L_encoder.getPosition();
+        return L_encoder.getPosition() / DriveConstants.Revoluionspermeter;
     }
 
 

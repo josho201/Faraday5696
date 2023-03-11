@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Auto1;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.RobotClaw;
@@ -36,6 +37,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+
     RobotDrive.setDefaultCommand(Commands.run(() ->{ 
           RobotDrive.curvatureDrive(
               -m_driverController.getLeftY(),
@@ -63,10 +65,6 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    //new Trigger(m_exampleSubsystem::exampleCondition)
-      //  .onTrue(new ExampleCommand(m_exampleSubsystem));
-  
   // SLOW
 
   m_driverController.rightBumper()
@@ -141,8 +139,7 @@ public class RobotContainer {
 
   
   public Command getAutonomousCommand() {
-    
-    return null;
+    return new Auto1(RobotDrive, EVO, robotClaw);
   }
 
   public void INIT(){

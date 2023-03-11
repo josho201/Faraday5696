@@ -9,10 +9,11 @@ public class DriveDistance extends CommandBase{
     private double goal;
     private double margen;
     
-    public DriveDistance(double distance, double margen){
+    public DriveDistance(double distance, double margen, DriveTrain robot){
         addRequirements(RobotDrive);
         this.goal = distance;
         this.margen = margen;
+        this.RobotDrive = robot;
     }
 
     @Override  
